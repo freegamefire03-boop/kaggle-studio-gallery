@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kaggle Studio Gallery</title>
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --surface: #151c2c;
+            --surface-border: #232e47;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; padding: 24px; }
+
+        .app-header { max-width: 1400px; margin: 0 auto 24px auto; display: flex; flex-direction: column; gap: 16px; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .title-group { display: flex; align-items: center; gap: 12px; }
+        .title-group h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; }
+        .badge { background: #1e293b; color: var(--accent); border: 1px solid var(--surface-border); padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 600; }
+
+        .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: var(--surface); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--surface-border); }
+        .search-box { flex: 1; min-width: 200px; position: relative; }
+        .search-box input { width: 100%; background: var(--bg); border: 1px solid var(--surface-border); color: var(--text-main); padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
+        .search-box input:focus { border-color: var(--accent); }
+
+        .tab-group { display: flex; background: var(--bg); border-radius: 8px; padding: 3px; border: 1px solid var(--surface-border); }
+        .tab-btn { border: none; padding: 6px 14px; border-radius: 6px; background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .tab-btn.active { background: var(--surface); color: var(--accent); border: 1px solid var(--surface-border); }
+
+        .control-group { display: flex; gap: 8px; align-items: center; font-size: 0.85rem; color: var(--text-muted); }
+        select, button { background: var(--bg); color: var(--text-main); border: 1px solid var(--surface-border); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        button:hover, select:hover { border-color: var(--accent); }
+        .btn-primary { background: var(--accent); color: #000; border: none; }
+        .btn-primary:hover { background: #7dd3fc; }
+        
+        .breadcrumb { max-width: 1400px; margin: 0 auto 16px auto; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); }
+        .breadcrumb-link { color: var(--accent); cursor: pointer; text-decoration: none; }
+        .breadcrumb-link:hover { text-decoration: underline; }
+
+        .grid { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .grid.size-md { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+        .folder-card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border); transition: transform 0.2s, border-color 0.2s; cursor: pointer; }
+        .folder-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+        .folder-cover { width: 100%; height: 220px; background: #020617; overflow: hidden; position: relative; }
+        .folder-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .folder-cover-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: #0f172a; }
+        .folder-info { padding: 14px; }
+        .folder-title { font-size: 1rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .folder-meta { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; display: flex; justify-content: space-between; }
+
+        .card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border); transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; }
+        .card:hover { transform: translateY(-3px); border-color: var(--accent); }
+        
+        .img-wrapper { width: 100%; height: 240px; background: #020617; overflow: hidden; position: relative; }
+        .card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+        .card:hover img { transform: scale(1.04); }
+        .card-info { padding: 12px 14px; }
+        .card-name { font-size: 0.88rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-time { font-size: 0.75rem; color: var(--accent); margin-top: 4px; font-family: monospace; }
+
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--surface); border-radius: 12px; border: 1px dashed var(--surface-border); }
+
+        .load-more-wrapper { max-width: 1400px; margin: 24px auto 0 auto; display: flex; justify-content: center; }
+        .btn-load-more { padding: 12px 32px; font-size: 0.95rem; border-radius: 99px; background: var(--surface); border: 1px solid var(--accent); color: var(--accent); }
+        .btn-load-more:hover { background: var(--accent); color: #000; }
+
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px); z-index: 1000; flex-direction: column; justify-content: space-between; padding: 20px; }
+        .lightbox.active { display: flex; }
+        .lightbox:fullscreen { padding: 10px; background: #000; }
+        .lb-header { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; width: 100%; margin: 0 auto; }
+        .lb-title { font-size: 0.95rem; color: var(--text-main); font-weight: 500; }
+        .lb-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; max-width: 1400px; width: 100%; margin: 0 auto; overflow: hidden; }
+        
+        .lb-body img { max-width: 95vw; max-height: 82vh; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); transition: opacity 0.15s ease-in-out; }
+        .lightbox:fullscreen .lb-body img { max-width: 100vw; max-height: 100vh; border-radius: 0; }
+        
+        .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.7); border: 1px solid var(--surface-border); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: background 0.2s, opacity 0.2s; z-index: 10; }
+        .lb-nav:hover { background: var(--accent); color: #000; }
+        .lb-prev { left: 10px; }
+        .lb-next { right: 10px; }
+        .lb-actions { display: flex; gap: 10px; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="top-row">
+            <div class="title-group">
+                <h1>🖼️ Kaggle Studio Gallery</h1>
+                <span class="badge" id="countBadge">0 items</span>
+            </div>
+            <div class="control-group">
+                <label><input type="checkbox" id="autoRefresh"> Auto-refresh (5s)</label>
+                <button onclick="fetchImages()" id="refreshBtn">↻ Refresh</button>
+            </div>
+        </div>
+        <div class="toolbar">
+            <div class="tab-group">
+                <button class="tab-btn active" id="tabFolders" onclick="setViewMode('folders')">📁 Folders</button>
+                <button class="tab-btn" id="tabAll" onclick="setViewMode('all')">🖼️ All Photos</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by image or folder name..." oninput="resetAndRender()">
+            </div>
+            <div class="control-group">
+                <label>Sort:</label>
+                <select id="sortSelect" onchange="resetAndRender()">
+                    <option value="time-desc">Newest First</option>
+                    <option value="time-asc">Oldest First</option>
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb" id="breadcrumb" style="display: none;">
+        <span class="breadcrumb-link" onclick="setViewMode('folders')">📁 Folders</span>
+        <span>›</span>
+        <span id="breadcrumbFolder" style="color: var(--text-main);">Folder Name</span>
+    </div>
+
+    <div class="grid size-md" id="galleryGrid"></div>
+    
+    <div class="load-more-wrapper" id="loadMoreContainer" style="display: none;">
+        <button class="btn-load-more" onclick="showMore()" id="loadMoreBtn">Show More</button>
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <div class="lb-header">
+            <div class="lb-title" id="lbTitle">image.png</div>
+            <div class="lb-actions">
+                <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="btn-primary">⛶ Fullscreen</button>
+                <a id="lbDownload" download target="_blank"><button>Download Original</button></a>
+                <button onclick="closeLightbox()">✕ Close</button>
+            </div>
+        </div>
+        <div class="lb-body">
+            <div class="lb-nav lb-prev" onclick="navLightbox(-1)">❮</div>
+            <img id="lbImage" src="" alt="Preview">
+            <div class="lb-nav lb-next" onclick="navLightbox(1)">❯</div>
+        </div>
+    </div>
+
+    <script>
+        let allImages = [];
+        let viewMode = 'folders';
+        let selectedFolder = null;
+        let activeImageList = [];
+        
+        let visibleCount = 10;
+        const PAGE_SIZE = 10;
+        
+        let currentIndex = -1;
+        let refreshInterval = null;
+        const imageMemoryCache = new Map();
+
+        async function fetchImages() {
+            try {
+                const res = await fetch('/api/images');
+                allImages = await res.json();
+                renderGallery();
+            } catch(e) { console.error("Error fetching images:", e); }
+        }
+
+        function setViewMode(mode, folderName = null) {
+            viewMode = mode;
+            selectedFolder = folderName;
+            
+            document.getElementById('tabFolders').classList.toggle('active', mode === 'folders' || mode === 'folder_detail');
+            document.getElementById('tabAll').classList.toggle('active', mode === 'all');
+            
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (mode === 'folder_detail') {
+                breadcrumb.style.display = 'flex';
+                document.getElementById('breadcrumbFolder').innerText = folderName ? folderName.replace(/_/g, ' ') : '';
+            } else {
+                breadcrumb.style.display = 'none';
+            }
+            
+            visibleCount = PAGE_SIZE;
+            renderGallery();
+        }
+
+        function filterAndSortImages(imgArray) {
+            const query = document.getElementById('searchInput').value.toLowerCase().replace(/_/g, ' ').trim();
+            const sortVal = document.getElementById('sortSelect').value;
+
+            let filtered = imgArray.filter(img => {
+                const normName = img.name.toLowerCase().replace(/_/g, ' ');
+                const normPath = img.path.toLowerCase().replace(/_/g, ' ');
+                const normRaw = (img.raw_name || '').toLowerCase().replace(/_/g, ' ');
+                return normName.includes(query) || normPath.includes(query) || normRaw.includes(query);
+            });
+
+            filtered.sort((a, b) => {
+                if (sortVal === 'time-desc') return b.mtime - a.mtime;
+                if (sortVal === 'time-asc') return a.mtime - b.mtime;
+                if (sortVal === 'name-asc') return a.name.localeCompare(b.name);
+                if (sortVal === 'name-desc') return a.name.localeCompare(b.name);
+                return 0;
+            });
+
+            return filtered;
+        }
+
+        function resetAndRender() {
+            visibleCount = PAGE_SIZE;
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            const loadMoreBtn = document.getElementById('loadMoreContainer');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().replace(/_/g, ' ').trim();
+
+            if (viewMode === 'folders' && !searchVal) {
+                const groups = {};
+                allImages.forEach(img => {
+                    const fKey = img.folder;
+                    if (!groups[fKey]) groups[fKey] = [];
+                    groups[fKey].push(img);
+                });
+
+                let folderKeys = Object.keys(groups);
+
+                folderKeys.sort((a, b) => {
+                    const newestA = Math.max(...groups[a].map(i => i.mtime));
+                    const newestB = Math.max(...groups[b].map(i => i.mtime));
+                    return newestB - newestA;
+                });
+
+                document.getElementById('countBadge').innerText = `${folderKeys.length} Folders`;
+                loadMoreBtn.style.display = 'none';
+
+                if (folderKeys.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">No matching folders found</div>';
+                    return;
+                }
+
+                grid.innerHTML = folderKeys.map(key => {
+                    const folderImgs = groups[key];
+                    const coverImg = folderImgs[0];
+                    const displayName = key.replace(/_/g, ' ');
+                    return `
+                        <div class="folder-card" onclick="setViewMode('folder_detail', '${key}')">
+                            <div class="folder-cover">
+                                ${coverImg ? `<img src="${coverImg.thumb_url}" loading="lazy" alt="Cover">` : `<div class="folder-cover-empty">📁</div>`}
+                            </div>
+                            <div class="folder-info">
+                                <div class="folder-title" title="${displayName}">📁 ${displayName}</div>
+                                <div class="folder-meta">
+                                    <span>${folderImgs.length} photo${folderImgs.length > 1 ? 's' : ''}</span>
+                                    <span>${coverImg ? coverImg.mtime_str.split(' ')[0] : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } else {
+                let targetList = allImages;
+                if (viewMode === 'folder_detail' && selectedFolder) {
+                    targetList = allImages.filter(i => i.folder === selectedFolder);
+                }
+
+                activeImageList = filterAndSortImages(targetList);
+
+                document.getElementById('countBadge').innerText = `${Math.min(visibleCount, activeImageList.length)} / ${activeImageList.length} shown`;
+
+                if (activeImageList.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">No matching images found</div>';
+                    loadMoreBtn.style.display = 'none';
+                    return;
+                }
+
+                const currentSlice = activeImageList.slice(0, visibleCount);
+
+                grid.innerHTML = currentSlice.map((img, idx) => `
+                    <div class="card" onclick="openLightbox(${idx})">
+                        <div class="img-wrapper">
+                            <img src="${img.thumb_url}" loading="lazy" alt="${img.name}" onload="cacheInMemory('${img.thumb_url}')">
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name" title="${img.name}">${img.name}</div>
+                            <div class="card-time">${img.mtime_str}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                if (visibleCount < activeImageList.length) {
+                    loadMoreBtn.style.display = 'flex';
+                    document.getElementById('loadMoreBtn').innerText = `Show More (+${PAGE_SIZE} photos)`;
+                } else {
+                    loadMoreBtn.style.display = 'none';
+                }
+            }
+        }
+
+        function showMore() {
+            visibleCount += PAGE_SIZE;
+            renderGallery();
+        }
+
+        function cacheInMemory(url) {
+            if (!imageMemoryCache.has(url)) {
+                const img = new Image();
+                img.src = url;
+                imageMemoryCache.set(url, img);
+            }
+        }
+
+        function openLightbox(idx) {
+            currentIndex = idx;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(e => {});
+            }
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        function toggleFullscreen() {
+            const lb = document.getElementById('lightbox');
+            if (!document.fullscreenElement) {
+                if (lb.requestFullscreen) lb.requestFullscreen();
+                else if (lb.webkitRequestFullscreen) lb.webkitRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function updateLightbox() {
+            if (currentIndex < 0 || currentIndex >= activeImageList.length) return;
+            const img = activeImageList[currentIndex];
+            const lbImage = document.getElementById('lbImage');
+
+            document.getElementById('lbTitle').innerText = `${img.path} (${img.mtime_str})`;
+            document.getElementById('lbDownload').href = img.url;
+
+            const prevBtn = document.querySelector('.lb-prev');
+            const nextBtn = document.querySelector('.lb-next');
+            if (prevBtn) prevBtn.style.opacity = (currentIndex === 0) ? '0.2' : '1';
+            if (nextBtn) nextBtn.style.opacity = (currentIndex === activeImageList.length - 1) ? '0.2' : '1';
+
+            lbImage.src = img.thumb_url;
+
+            if (imageMemoryCache.has(img.url)) {
+                lbImage.src = imageMemoryCache.get(img.url).src;
+                return;
+            }
+
+            const fullRes = new Image();
+            fullRes.src = img.url;
+            fullRes.onload = () => {
+                imageMemoryCache.set(img.url, fullRes);
+                if (activeImageList[currentIndex] && activeImageList[currentIndex].url === img.url) {
+                    lbImage.src = img.url;
+                }
+            };
+        }
+
+        function navLightbox(dir) {
+            const newIndex = currentIndex + dir;
+            if (newIndex >= 0 && newIndex < activeImageList.length) {
+                currentIndex = newIndex;
+                updateLightbox();
+            }
+        }
+
+        document.getElementById('autoRefresh').addEventListener('change', (e) => {
+            if (e.target.checked) refreshInterval = setInterval(fetchImages, 5000);
+            else clearInterval(refreshInterval);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('lightbox'].classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') navLightbox(-1);
+            if (e.key === 'ArrowRight') navLightbox(1);
+            if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+        });
+
+        fetchImages();
+    </script>
+</body>
+</html>
