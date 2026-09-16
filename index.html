@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Kaggle Studio Gallery</title>
     <style>
         :root {
@@ -14,89 +14,75 @@
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; padding: 24px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text-main); min-height: 100vh; padding: 20px; }
 
-        .app-header { max-width: 1400px; margin: 0 auto 24px auto; display: flex; flex-direction: column; gap: 16px; }
+        .app-header { max-width: 1400px; margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 14px; }
         .top-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-        .title-group { display: flex; align-items: center; gap: 12px; }
-        .title-group h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; }
-        .badge { background: #1e293b; color: var(--accent); border: 1px solid var(--surface-border); padding: 4px 10px; border-radius: 99px; font-size: 0.8rem; font-weight: 600; }
+        .title-group { display: flex; align-items: center; gap: 10px; }
+        .title-group h1 { font-size: 1.3rem; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; }
+        .badge { background: #1e293b; color: var(--accent); border: 1px solid var(--surface-border); padding: 4px 10px; border-radius: 99px; font-size: 0.78rem; font-weight: 600; }
 
-        .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: var(--surface); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--surface-border); }
-        .search-box { flex: 1; min-width: 200px; position: relative; }
-        .search-box input { width: 100%; background: var(--bg); border: 1px solid var(--surface-border); color: var(--text-main); padding: 8px 14px; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
+        .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: var(--surface); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--surface-border); }
+        .search-box { flex: 1; min-width: 180px; position: relative; }
+        .search-box input { width: 100%; background: var(--bg); border: 1px solid var(--surface-border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; font-size: 0.9rem; outline: none; }
         .search-box input:focus { border-color: var(--accent); }
 
         .tab-group { display: flex; background: var(--bg); border-radius: 8px; padding: 3px; border: 1px solid var(--surface-border); }
-        .tab-btn { border: none; padding: 6px 14px; border-radius: 6px; background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .tab-btn { border: none; padding: 6px 12px; border-radius: 6px; background: transparent; color: var(--text-muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; }
         .tab-btn.active { background: var(--surface); color: var(--accent); border: 1px solid var(--surface-border); }
 
-        .control-group { display: flex; gap: 8px; align-items: center; font-size: 0.85rem; color: var(--text-muted); }
-        select, button { background: var(--bg); color: var(--text-main); border: 1px solid var(--surface-border); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .control-group { display: flex; gap: 8px; align-items: center; font-size: 0.82rem; color: var(--text-muted); }
+        select, button { background: var(--bg); color: var(--text-main); border: 1px solid var(--surface-border); padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
         button:hover, select:hover { border-color: var(--accent); }
-        .btn-primary { background: var(--accent); color: #000; border: none; }
-        .btn-primary:hover { background: #7dd3fc; }
         
-        .breadcrumb { max-width: 1400px; margin: 0 auto 16px auto; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); }
+        .breadcrumb { max-width: 1400px; margin: 0 auto 14px auto; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
         .breadcrumb-link { color: var(--accent); cursor: pointer; text-decoration: none; }
-        .breadcrumb-link:hover { text-decoration: underline; }
 
-        .grid { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .grid.size-md { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+        .grid { display: grid; gap: 16px; max-width: 1400px; margin: 0 auto; }
+        .grid.size-md { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 
-        .folder-card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border); transition: transform 0.2s, border-color 0.2s; cursor: pointer; }
-        .folder-card:hover { transform: translateY(-4px); border-color: var(--accent); }
-        .folder-cover { width: 100%; height: 220px; background: #020617; overflow: hidden; position: relative; }
+        .folder-card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border); cursor: pointer; }
+        .folder-cover { width: 100%; height: 200px; background: #020617; overflow: hidden; position: relative; }
         .folder-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .folder-cover-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: #0f172a; }
-        .folder-info { padding: 14px; }
-        .folder-title { font-size: 1rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .folder-meta { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; display: flex; justify-content: space-between; }
+        .folder-cover-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; background: #0f172a; }
+        .folder-info { padding: 12px; }
+        .folder-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .folder-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; display: flex; justify-content: space-between; }
 
-        .card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border); transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; }
-        .card:hover { transform: translateY(-3px); border-color: var(--accent); }
-        
-        .img-wrapper { width: 100%; height: 240px; background: #020617; overflow: hidden; position: relative; }
-        .card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
-        .card:hover img { transform: scale(1.04); }
-        .card-info { padding: 12px 14px; }
-        .card-name { font-size: 0.88rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-time { font-size: 0.75rem; color: var(--accent); margin-top: 4px; font-family: monospace; }
+        .card { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border); cursor: pointer; position: relative; }
+        .img-wrapper { width: 100%; height: 220px; background: #020617; overflow: hidden; position: relative; }
+        .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .card-info { padding: 10px 12px; }
+        .card-name { font-size: 0.85rem; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-time { font-size: 0.72rem; color: var(--accent); margin-top: 3px; font-family: monospace; }
 
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--surface); border-radius: 12px; border: 1px dashed var(--surface-border); }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted); background: var(--surface); border-radius: 12px; border: 1px dashed var(--surface-border); }
 
-        .load-more-wrapper { max-width: 1400px; margin: 24px auto 0 auto; display: flex; justify-content: center; }
-        .btn-load-more { padding: 12px 32px; font-size: 0.95rem; border-radius: 99px; background: var(--surface); border: 1px solid var(--accent); color: var(--accent); }
-        .btn-load-more:hover { background: var(--accent); color: #000; }
+        .load-more-wrapper { max-width: 1400px; margin: 20px auto 0 auto; display: flex; justify-content: center; }
+        .btn-load-more { padding: 10px 28px; font-size: 0.9rem; border-radius: 99px; background: var(--surface); border: 1px solid var(--accent); color: var(--accent); }
 
-        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px); z-index: 1000; flex-direction: column; justify-content: space-between; padding: 20px; }
+        /* MOBILE OPTIMIZED LIGHTBOX */
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.96); z-index: 1000; align-items: center; justify-content: center; overflow: hidden; }
         .lightbox.active { display: flex; }
-        .lightbox:fullscreen { padding: 10px; background: #000; }
-        .lb-header { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; width: 100%; margin: 0 auto; }
-        .lb-title { font-size: 0.95rem; color: var(--text-main); font-weight: 500; }
-        .lb-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; max-width: 1400px; width: 100%; margin: 0 auto; overflow: hidden; }
         
-        .lb-body img { max-width: 95vw; max-height: 82vh; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); transition: opacity 0.15s ease-in-out; }
-        .lightbox:fullscreen .lb-body img { max-width: 100vw; max-height: 100vh; border-radius: 0; }
+        /* Small floating X close button */
+        .mobile-close-btn { position: absolute; top: 16px; right: 16px; width: 42px; height: 42px; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--surface-border); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; z-index: 1010; backdrop-filter: blur(4px); }
         
-        .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.7); border: 1px solid var(--surface-border); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; transition: background 0.2s, opacity 0.2s; z-index: 10; }
-        .lb-nav:hover { background: var(--accent); color: #000; }
-        .lb-prev { left: 10px; }
-        .lb-next { right: 10px; }
-        .lb-actions { display: flex; gap: 10px; align-items: center; }
+        .lb-body { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .lb-body img { max-width: 100vw; max-height: 100vh; width: auto; height: auto; object-fit: contain; }
     </style>
 </head>
 <body>
     <div class="app-header">
         <div class="top-row">
             <div class="title-group">
-                <h1>🖼️ Kaggle Studio Gallery</h1>
+                <h1>🖼️ Kaggle Gallery</h1>
                 <span class="badge" id="countBadge">0 items</span>
             </div>
             <div class="control-group">
-                <label><input type="checkbox" id="autoRefresh"> Auto-refresh (5s)</label>
-                <button onclick="fetchImages()" id="refreshBtn">↻ Refresh</button>
+                <label><input type="checkbox" id="autoRefresh"> Auto-refresh</label>
+                <button onclick="fetchImages()">↻ Refresh</button>
             </div>
         </div>
         <div class="toolbar">
@@ -105,10 +91,9 @@
                 <button class="tab-btn" id="tabAll" onclick="setViewMode('all')">🖼️ All Photos</button>
             </div>
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search by image or folder name..." oninput="resetAndRender()">
+                <input type="text" id="searchInput" placeholder="Search name or folder..." oninput="resetAndRender()">
             </div>
             <div class="control-group">
-                <label>Sort:</label>
                 <select id="sortSelect" onchange="resetAndRender()">
                     <option value="time-desc">Newest First</option>
                     <option value="time-asc">Oldest First</option>
@@ -131,19 +116,11 @@
         <button class="btn-load-more" onclick="showMore()" id="loadMoreBtn">Show More</button>
     </div>
 
+    <!-- Mobile Optimized Lightbox -->
     <div class="lightbox" id="lightbox">
-        <div class="lb-header">
-            <div class="lb-title" id="lbTitle">image.png</div>
-            <div class="lb-actions">
-                <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="btn-primary">⛶ Fullscreen</button>
-                <a id="lbDownload" download target="_blank"><button>Download Original</button></a>
-                <button onclick="closeLightbox()">✕ Close</button>
-            </div>
-        </div>
-        <div class="lb-body">
-            <div class="lb-nav lb-prev" onclick="navLightbox(-1)">❮</div>
+        <div class="mobile-close-btn" onclick="closeLightbox()">×</div>
+        <div class="lb-body" id="lbBody">
             <img id="lbImage" src="" alt="Preview">
-            <div class="lb-nav lb-next" onclick="navLightbox(1)">❯</div>
         </div>
     </div>
 
@@ -152,13 +129,15 @@
         let viewMode = 'folders';
         let selectedFolder = null;
         let activeImageList = [];
-        
         let visibleCount = 10;
         const PAGE_SIZE = 10;
-        
         let currentIndex = -1;
         let refreshInterval = null;
         const imageMemoryCache = new Map();
+
+        // Touch & Swipe state
+        let touchStartX = 0;
+        let touchEndX = 0;
 
         async function fetchImages() {
             try {
@@ -171,7 +150,6 @@
         function setViewMode(mode, folderName = null) {
             viewMode = mode;
             selectedFolder = folderName;
-            
             document.getElementById('tabFolders').classList.toggle('active', mode === 'folders' || mode === 'folder_detail');
             document.getElementById('tabAll').classList.toggle('active', mode === 'all');
             
@@ -182,7 +160,6 @@
             } else {
                 breadcrumb.style.display = 'none';
             }
-            
             visibleCount = PAGE_SIZE;
             renderGallery();
         }
@@ -202,10 +179,9 @@
                 if (sortVal === 'time-desc') return b.mtime - a.mtime;
                 if (sortVal === 'time-asc') return a.mtime - b.mtime;
                 if (sortVal === 'name-asc') return a.name.localeCompare(b.name);
-                if (sortVal === 'name-desc') return a.name.localeCompare(b.name);
+                if (sortVal === 'name-desc') return b.name.localeCompare(a.name);
                 return 0;
             });
-
             return filtered;
         }
 
@@ -228,7 +204,6 @@
                 });
 
                 let folderKeys = Object.keys(groups);
-
                 folderKeys.sort((a, b) => {
                     const newestA = Math.max(...groups[a].map(i => i.mtime));
                     const newestB = Math.max(...groups[b].map(i => i.mtime));
@@ -255,14 +230,13 @@
                             <div class="folder-info">
                                 <div class="folder-title" title="${displayName}">📁 ${displayName}</div>
                                 <div class="folder-meta">
-                                    <span>${folderImgs.length} photo${folderImgs.length > 1 ? 's' : ''}</span>
+                                    <span>${folderImgs.length} photos</span>
                                     <span>${coverImg ? coverImg.mtime_str.split(' ')[0] : ''}</span>
                                 </div>
                             </div>
                         </div>
                     `;
                 }).join('');
-
             } else {
                 let targetList = allImages;
                 if (viewMode === 'folder_detail' && selectedFolder) {
@@ -270,7 +244,6 @@
                 }
 
                 activeImageList = filterAndSortImages(targetList);
-
                 document.getElementById('countBadge').innerText = `${Math.min(visibleCount, activeImageList.length)} / ${activeImageList.length} shown`;
 
                 if (activeImageList.length === 0) {
@@ -280,7 +253,6 @@
                 }
 
                 const currentSlice = activeImageList.slice(0, visibleCount);
-
                 grid.innerHTML = currentSlice.map((img, idx) => `
                     <div class="card" onclick="openLightbox(${idx})">
                         <div class="img-wrapper">
@@ -295,7 +267,7 @@
 
                 if (visibleCount < activeImageList.length) {
                     loadMoreBtn.style.display = 'flex';
-                    document.getElementById('loadMoreBtn').innerText = `Show More (+${PAGE_SIZE} photos)`;
+                    document.getElementById('loadMoreBtn').innerText = `Show More (+${PAGE_SIZE})`;
                 } else {
                     loadMoreBtn.style.display = 'none';
                 }
@@ -322,34 +294,13 @@
         }
 
         function closeLightbox() {
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(e => {});
-            }
             document.getElementById('lightbox').classList.remove('active');
-        }
-
-        function toggleFullscreen() {
-            const lb = document.getElementById('lightbox');
-            if (!document.fullscreenElement) {
-                if (lb.requestFullscreen) lb.requestFullscreen();
-                else if (lb.webkitRequestFullscreen) lb.webkitRequestFullscreen();
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
         }
 
         function updateLightbox() {
             if (currentIndex < 0 || currentIndex >= activeImageList.length) return;
             const img = activeImageList[currentIndex];
             const lbImage = document.getElementById('lbImage');
-
-            document.getElementById('lbTitle').innerText = `${img.path} (${img.mtime_str})`;
-            document.getElementById('lbDownload').href = img.url;
-
-            const prevBtn = document.querySelector('.lb-prev');
-            const nextBtn = document.querySelector('.lb-next');
-            if (prevBtn) prevBtn.style.opacity = (currentIndex === 0) ? '0.2' : '1';
-            if (nextBtn) nextBtn.style.opacity = (currentIndex === activeImageList.length - 1) ? '0.2' : '1';
 
             lbImage.src = img.thumb_url;
 
@@ -376,17 +327,51 @@
             }
         }
 
+        // Mobile touch & edge click listeners setup
+        const lbBody = document.getElementById('lbBody');
+        
+        lbBody.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        lbBody.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            const threshold = 40;
+            if (touchEndX < touchStartX - threshold) {
+                navLightbox(1);  // Swipe Left -> Next
+            } else if (touchEndX > touchStartX + threshold) {
+                navLightbox(-1); // Swipe Right -> Prev
+            }
+        }, {passive: true});
+
+        // Edge clicking or clicking image to close/navigate
+        lbBody.addEventListener('click', e => {
+            // If clicking the image itself, quit full screen / close
+            if (e.target.tagName === 'IMG') {
+                closeLightbox();
+                return;
+            }
+            const screenWidth = window.innerWidth;
+            const clickX = e.clientX;
+            if (clickX < screenWidth * 0.3) {
+                navLightbox(-1); // Left edge -> Prev
+            } else if (clickX > screenWidth * 0.7) {
+                navLightbox(1);  // Right edge -> Next
+            } else {
+                closeLightbox(); // Center tap -> Close
+            }
+        });
+
         document.getElementById('autoRefresh').addEventListener('change', (e) => {
             if (e.target.checked) refreshInterval = setInterval(fetchImages, 5000);
             else clearInterval(refreshInterval);
         });
 
         document.addEventListener('keydown', (e) => {
-            if (!document.getElementById('lightbox'].classList.contains('active')) return;
+            if (!document.getElementById('lightbox').classList.contains('active')) return;
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'ArrowLeft') navLightbox(-1);
             if (e.key === 'ArrowRight') navLightbox(1);
-            if (e.key === 'f' || e.key === 'F') toggleFullscreen();
         });
 
         fetchImages();
